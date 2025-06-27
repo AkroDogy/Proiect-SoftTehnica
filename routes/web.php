@@ -1,35 +1,36 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Test;
-use App\Models\Formular;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
+//Controllers
 
-Route::get('/', function () {
-    return view('welcome');
+use App\Http\Controllers\admininsertController; // Insert automat doar daca user = admin+auth
+use App\Http\Controllers\formularController; // Formular doar pt user auth
+use App\Http\Controllers\authController; // Rute de auth
+use App\Http\Controllers\landingController; // Landing + helpers pentru vizualizarea datelor user-ului daca este logat
+
+//Nonauth
+Route::get('/', [landingController::class, 'index']);
+Route::post('/set-role', [landingController::class, 'setAdmin'])->middleware('auth');
+
+Route::controller(authController::class)->group(function () {
+    Route::get('/register', 'registerPage');
+    Route::post('/register', 'register');
+    Route::get('/login', 'loginPage');
+    Route::post('/login', 'login');
 });
 
-Route::get('/insert-model', function () {
-    // 10 rand cuvinte in db apelant functia de get
-    for ($i = 0; $i < 10; $i++) {
-        Test::create(['test_var' => Str::random(10)]);
-    }
-    return redirect('/display-model')->with('success', '10 random words have been added to the database');
+//auth users
+Route::middleware('auth')->group(function () {
+    Route::get('/logout', [authController::class, 'logout']);
+    //for test rbac
+    Route::middleware('admin')->controller(admininsertController::class)->group(function () {
+        Route::get('/insert-model', 'insert');
+        Route::get('/display-model', 'display');
+    });
+    Route::controller(formularController::class)->group(function () {
+        Route::get('/formular', 'formularPage');
+        Route::post('/formular', 'formular');
+    });
 });
 
-Route::get('/display-model', function () {
-    //return toate elem din Test Model
-    $tests = Test::all();
-    return view('display', ['tests' => $tests]);
-});
-
-Route::get('/formular', function () {
-    $formulare = Formular::all();
-    return view('formular', ['formulare' => $formulare]);
-});
-
-Route::post('/formular', function (Request $request) {
-    Formular::create($request->all());
-    return redirect('/formular')->with('success', 'All data has been added');
-});
+//Need a tip pentru o organizare mai buna a rutelor :)
