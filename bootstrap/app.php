@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => \App\Http\Middleware\isAuth::class,
             'admin' => \App\Http\Middleware\isAdmin::class,
+            'is-logged' => \App\Http\Middleware\isLogged::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

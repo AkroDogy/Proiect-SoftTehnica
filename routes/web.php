@@ -12,7 +12,7 @@ use App\Http\Controllers\landingController; // Landing + helpers pentru vizualiz
 Route::get('/', [landingController::class, 'index']);
 Route::post('/set-role', [landingController::class, 'setAdmin'])->middleware('auth');
 
-Route::controller(authController::class)->group(function () {
+Route::middleware('is-logged')->controller(authController::class)->group(function () {
     Route::get('/register', 'registerPage');
     Route::post('/register', 'register');
     Route::get('/login', 'loginPage');

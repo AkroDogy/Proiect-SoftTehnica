@@ -32,7 +32,7 @@
     <button type="submit" class="btn btn-primary">Send</button>
 </form>
 <hr>
-<h3>DB Colection</h3>
+<h3>User Formulars</h3>
 @if($formulars->count())
     <table class="table table-bordered">
         <thead>
@@ -42,6 +42,7 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>Description</th>
+                <th>Alocated to userId:</th>
                 <th>Date</th>
             </tr>
         </thead>
@@ -53,7 +54,39 @@
                     <td>{{ $form->email }}</td>
                     <td>{{ $form->phone ?? '-' }}</td>
                     <td>{{ $form->description ?? '-' }}</td>
+                    <td>{{ $form->user_id ?? '-' }}</td>
                     <td>{{ $form->created_at->format('d-m-Y H:i') }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+@else
+    <p>No records.</p>
+@endif
+<h3>All Formulars</h3>
+@if(isset($allforms) && $allforms->count())
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Description</th>
+                <th>Alocated to userId:</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($allforms as $allform)
+                <tr>
+                    <td>{{ $allform->firstname }}</td>
+                    <td>{{ $allform->lastname }}</td>
+                    <td>{{ $allform->email }}</td>
+                    <td>{{ $allform->phone ?? '-' }}</td>
+                    <td>{{ $allform->description ?? '-' }}</td>
+                    <td>{{ $allform->user_id ?? '-' }}</td>
+                    <td>{{ $allform->created_at->format('d-m-Y H:i') }}</td>
                 </tr>
             @endforeach
         </tbody>

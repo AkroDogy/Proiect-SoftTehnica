@@ -9,8 +9,14 @@ class formularController
 {
     public function formularPage()
     {
-        $formulars = Formular::latest()->get();
-        return view('formular.formular', compact('formulars'));
+        if (Auth::user()->role === 'admin') {
+            $formulars = Formular::where('user_id', Auth::id())->latest()->get();
+            $allforms = Formular::latest()->get();
+            return view('formular.formular', compact('formulars', 'allforms'));
+        } else {
+            $formulars = Formular::where('user_id', Auth::id())->latest()->get();
+            return view('formular.formular', compact('formulars'));
+        }
     }
     public function formular(Request $request)
     {
@@ -29,7 +35,14 @@ class formularController
             'description.string' => 'Description must be a string.',
             'description.required' => 'Description is required.',
         ]);
-        Formular::create($request->all());
+        Formular::create([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'description' => $request->description,
+            'user_id' => Auth::id(),
+        ]);
         return redirect('/formular')->with('success', 'Formular saved');
     }
 }

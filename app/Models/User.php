@@ -44,4 +44,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function formulars()
+    {
+        return $this->hasMany(Formular::class);
+    }
+
 }
